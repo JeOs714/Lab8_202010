@@ -19,7 +19,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  """
 
-
 import config as cf
 from ADT import list as lt
 from ADT import graph as g
@@ -27,7 +26,8 @@ from ADT import map as map
 from ADT import list as lt
 from DataStructures import listiterator as it
 from datetime import datetime
-
+from DataStructures import DFS as dfs
+from ADT import stack as stk
 """
 Se define la estructura de un catálogo de libros.
 El catálogo tendrá tres listas, una para libros, otra para autores 
@@ -40,8 +40,10 @@ def newCatalog():
     """
     Inicializa el catálogo y retorna el catalogo inicializado.
     """
-    rgraph = g.newGraph(5500,compareByKey)
-    catalog = {'reviewGraph':rgraph}    
+    fgraph = g.newGraph(111353,compareByKey)
+    catalog = {}
+    #catalog['reviewGraph'] = rgraph
+    catalog['flightGraph'] = fgraph
     return catalog
 
 
@@ -70,16 +72,99 @@ def countNodesEdges (catalog):
 
     return nodes,edges
 
-def getPath (catalog, source, dst):
+def getPathDFS (catalog, source, dst):
     """
     Retorna el camino, si existe, entre vertice origen y destino
     """
+    Dfs= DFS(catalog, source)
+    path= dfs.pathTo(Dfs, dst)
     print("vertices: ",source,", ",dst)
     # ejecutar dfs desde source
     # obtener el camino hasta dst
     # retornar el camino
-    return None
+    respuesta= stk.pop(path)
+    while not stk.isEmpty(path):
+        paso= stk.pop(path)
+        respuesta += "--->"
+        respuesta += paso 
+    return respuesta
+
+def getPathBFS (catalog, source, dst):
+    """
+    Retorna el camino, si existe, entre vertice origen y destino
+    """
+    Bfs= BFS(catalog, source)
+    path= dfs.pathTo(Bfs, dst)
+    print("vertices: ",source,", ",dst)
+    # ejecutar dfs desde source
+    # obtener el camino hasta dst
+    # retornar el camino
+    respuesta= stk.pop(path)
+    while not stk.isEmpty(path):
+        paso= stk.pop(path)
+        respuesta += "--->"
+        respuesta += paso 
+    return respuesta
+def addFlightNode(catalog, row):
+    """
+    Adiciona un nodo para almacenar un vuelo. 
+    """
+    if not g.containsVertex(catalog['flightGraph'], row['VERTEX']):
+        g.insertVertex (catalog['flightGraph'], row['VERTEX'])
+
+def addFlightEdge (catalog, row):
+    """
+    Adiciona un enlace para conectar dos vuelos
+    """
+    g.addEdge (catalog['flightGraph'], row['SOURCE'], row['DEST'], row['DISTANCE'])
+
+def addFlightNode_user(catalog, vertice):
+    if not g.containsVertex(catalog['flightGraph'], vertice):
+        g.insertVertex (catalog['flightGraph'], vertice)
+        return False
+    else:
+        return True
+
+def addFlightEdge_user(catalog, vertice1, vertice2, valor):
+    g.addEdge (catalog['flightGraph'], vertice1, vertice2, valor)
+
+def countNodesEdges (catalog):
+    """
+    Retorna la cantidad de nodos y enlaces del grafo de revisiones
+    """
+    #nodes = g.numVertex(catalog['reviewGraph'])
+    #edges = g.numEdges(catalog['reviewGraph'])
+
+    nodes = g.numVertex(catalog['flightGraph'])
+    edges = g.numEdges(catalog['flightGraph'])
+
+    return nodes,edges
+
+def countConnectedComponents (catalog):
+    """
+    Retorna la cantidad de componentes conectados de un grafo.
+    """
+    grafo = catalog["flightGraph"]
+    vertices = g.vertices(grafo)
+    componentes_conectados = 0
+    iterator = it.newIterator(vertices)
+    while  it.hasNext(iterator):
+        element = it.next(iterator)
+        if g.degree(grafo, element) > 0:
+            componentes_conectados += 1
+    return componentes_conectados
+
+def DFS (catalog, vertice_fuente):
+    if not g.containsVertex(catalog['flightGraph'], vertice_fuente):
+        return False
+    else:
+        return dfs.newDFS(catalog["flightGraph"], vertice_fuente)
     
+def BFS (catalog, vertice_fuente):
+    if not g.containsVertex(catalog['flightGraph'], vertice_fuente):
+        return False
+    else:
+        return dfs.newBFS(catalog["flightGraph"], vertice_fuente)
 # Funciones de comparacion
 
 def compareByKey (key, element):
