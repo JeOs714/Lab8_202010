@@ -125,8 +125,10 @@ class GraphTest (unittest.TestCase):
         return bfs.newBFS(graph, source)
     def test_pathTo(self, source="Bogota", dest="Pasto"):
         graph= self.newGraph()
-        path= bfs.newBFS(graph, source)
-        print(dfs.pathTo(path,"Bogota"))
+        path1= bfs.newBFS(graph, source)
+        path2= dfs.newDFS(graph, source)
+        print("resultado BFS",dfs.pathTo(path1, dest))
+        print("resultado DFS",dfs.pathTo(path2, dest))
 
 
 

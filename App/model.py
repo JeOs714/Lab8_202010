@@ -143,6 +143,8 @@ def countNodesEdges (catalog):
 def countConnectedComponents (catalog):
     """
     Retorna la cantidad de componentes conectados de un grafo.
+
+    Aquí en necesario usar DFS para saber cuántos están conectados y luego interar sobre este DFS para contarlos¿?
     """
     grafo = catalog["flightGraph"]
     vertices = g.vertices(grafo)
