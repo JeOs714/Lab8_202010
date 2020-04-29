@@ -5,6 +5,9 @@ from DataStructures import listiterator as it
 from ADT import graph as g
 from ADT import queue as q
 from ADT import list as lt
+from Test.graph import dfs
+from Test.graph import bfs
+
 
 
 class GraphTest (unittest.TestCase):
@@ -16,6 +19,31 @@ class GraphTest (unittest.TestCase):
 
     def tearDown (self):
         pass
+
+
+    def newGraph(self):
+        graph = g.newGraph(7,self.comparenames)
+
+        g.insertVertex (graph, 'Bogota')
+        g.insertVertex (graph, 'Yopal')
+        g.insertVertex (graph, 'Cali')
+        g.insertVertex (graph, 'Medellin')
+        g.insertVertex (graph, 'Pasto')
+        g.insertVertex (graph, 'Barranquilla')
+        g.insertVertex (graph, 'Manizales')
+
+        g.addEdge (graph, 'Bogota', 'Yopal')
+        g.addEdge (graph, 'Bogota', 'Medellin')
+        g.addEdge (graph, 'Bogota', 'Pasto')
+        g.addEdge (graph, 'Bogota', 'Cali')
+        g.addEdge (graph, 'Yopal', 'Medellin')
+        g.addEdge (graph, 'Medellin', 'Pasto')
+        g.addEdge (graph, 'Cali', 'Pasto')
+        g.addEdge (graph, 'Cali', 'Barranquilla')
+        g.addEdge (graph, 'Barranquilla','Manizales')
+        g.addEdge (graph, 'Pasto','Manizales')
+
+        return graph
 
     def comparenames (self, searchname, element):
         return (searchname == element['key'])
@@ -87,7 +115,20 @@ class GraphTest (unittest.TestCase):
 
         lst = g.adjacents (graph, 'Bogota')
         self.assertEqual (lt.size (lst), 4)
-    
+
+    def test_dfs(self, source="Bogota" ):
+        graph = self.newGraph()
+        return dfs.newDFS(graph, source)
+
+    def test_bfs(self,  source="Bogota"):
+        graph = self.newGraph()
+        return bfs.newBFS(graph, source)
+    def test_pathTo(self, source="Bogota", dest="Pasto"):
+        graph= self.newGraph()
+        path= bfs.newBFS(graph, source)
+        print(dfs.pathTo(path,"Bogota"))
+
+
 
 
 if __name__ == "__main__":
